@@ -1,7 +1,10 @@
-// pages/intro.tsx or under your specific path structure
-
 import React from 'react';
-import { NavHorizontal } from '../app/components/NavHorizontal'; // Adjust the import path based on your file structure
+import dynamic from 'next/dynamic';
+
+// Dynamically import the login page component for client-side rendering
+const NavHorizontal = dynamic(() => import('../app/components/NavHorizontal'), {
+  ssr: false,
+});
 
 const IntroPage = () => {
   return (

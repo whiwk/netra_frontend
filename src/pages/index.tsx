@@ -12,7 +12,7 @@ const HomePage = () => {
       router.replace('/dashboard');
     } else {
       // Redirect to the login page if the user is not authenticated
-      router.replace('/login');
+      router.replace('/auth/login');
     }
   }, [router]);
 

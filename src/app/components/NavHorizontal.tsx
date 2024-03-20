@@ -69,7 +69,7 @@ export const NavHorizontal: React.FunctionComponent = () => {
       <NavList>
         {/* Preventing default click behavior on each NavItem for demo purposes only */}
         <NavItem preventDefault itemId={0} isActive={activeItem === 0} to="#">
-          System Panel
+          Intro
         </NavItem>
         <NavItem preventDefault itemId={1} isActive={activeItem === 1} to="#">
           Policy
@@ -199,7 +199,7 @@ export const NavHorizontal: React.FunctionComponent = () => {
     <Masthead>
       <MastheadMain>
         <MastheadBrand>
-          <Brand src={pfLogo} alt="PatternFly" heights={{ default: '36px' }} />
+          <Brand src='/netra_logo.png' alt="Open Netra" heights={{ default: '36px' }} />
         </MastheadBrand>
       </MastheadMain>
       <MastheadContent>{headerToolbar}</MastheadContent>

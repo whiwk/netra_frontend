@@ -89,8 +89,7 @@ export const LoginPageHideShowPassword: React.FunctionComponent = () => {
   return (
     <LoginPage
       footerListVariants={ListVariant.inline}
-      brandImgAlt="PatternFly logo"
-      backgroundImgSrc="/assets/images/pfbg-icon.svg"
+      backgroundImgSrc="/netra_logo.png"
       textContent="This is placeholder text only. Use this area to place any information or introductory message about your application that may be relevant to users."
       loginTitle="Log in to your account"
     >
