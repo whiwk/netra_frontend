@@ -1,6 +1,6 @@
 import '@patternfly/patternfly/patternfly.css';
 import '@patternfly/react-core/dist/styles/base.css';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import {
@@ -12,9 +12,6 @@ import ExclamationCircleIcon from '@patternfly/react-icons/dist/esm/icons/exclam
 
 export const LoginPageHideShowPassword: React.FunctionComponent = () => {
   const router = useRouter();
-  useEffect(() => {
-    document.title = 'Open Netra | Login';
-  }, []);
   const [showHelperText, setShowHelperText] = useState(false);
   const [username, setUsername] = useState('');
   const [isValidUsername, setIsValidUsername] = useState(true);
@@ -89,8 +86,10 @@ export const LoginPageHideShowPassword: React.FunctionComponent = () => {
   return (
     <LoginPage
       footerListVariants={ListVariant.inline}
-      backgroundImgSrc="/netra_logo.png"
-      textContent="This is placeholder text only. Use this area to place any information or introductory message about your application that may be relevant to users."
+      brandImgSrc='/netra_logo.png'
+      brandImgAlt="PatternFly logo"
+      backgroundImgSrc="/assets/images/pfbg-icon.svg"
+      textContent="5G Network Simulation System Based on Centralized Dashboard in Cloud Native Environment for Managed Telecom Laboratory"
       loginTitle="Log in to your account"
     >
       {loginForm}

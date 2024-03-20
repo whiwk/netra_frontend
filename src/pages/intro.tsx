@@ -1,5 +1,5 @@
-import React from 'react';
 import dynamic from 'next/dynamic';
+import React from 'react';
 
 // Dynamically import the login page component for client-side rendering
 const NavHorizontal = dynamic(() => import('../app/components/NavHorizontal'), {

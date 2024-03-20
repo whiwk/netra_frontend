@@ -9,7 +9,7 @@ const HomePage = () => {
   useEffect(() => {
     if (isAuthenticated()) {
       // Redirect to the dashboard if the user is authenticated
-      router.replace('/dashboard');
+      router.replace('/intro');
     } else {
       // Redirect to the login page if the user is not authenticated
       router.replace('/auth/login');
