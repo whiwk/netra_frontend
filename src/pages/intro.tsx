@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import React from 'react';
+import withAuth from '../auth'
 
 // Dynamically import the login page component for client-side rendering
 const NavHorizontal = dynamic(() => import('../app/components/NavHorizontal'), {
@@ -18,4 +19,4 @@ const IntroPage = () => {
   );
 };
 
-export default IntroPage;
+export default withAuth(IntroPage);
