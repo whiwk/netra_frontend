@@ -1,5 +1,4 @@
 import '@patternfly/patternfly/patternfly.css';
-import '@patternfly/react-core/dist/styles/base.css';
 import React from 'react';
 import {
   Avatar,
@@ -39,8 +38,10 @@ import HelpIcon from '@patternfly/react-icons/dist/esm/icons/help-icon';
 import QuestionCircleIcon from '@patternfly/react-icons/dist/esm/icons/question-circle-icon';
 import EllipsisVIcon from '@patternfly/react-icons/dist/esm/icons/ellipsis-v-icon';
 import BellIcon from '@patternfly/react-icons/dist/esm/icons/bell-icon';
+import imgAvatar from '@patternfly/react-core/src/components/assets/avatarImg.svg';
+import pfLogo from '@patternfly/react-core/src/demos/assets/pf-logo.svg';
 
-export const NavHorizontal: React.FunctionComponent = () => {
+export const NavbarAdmin: React.FunctionComponent = () => {
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const [isKebabDropdownOpen, setIsKebabDropdownOpen] = React.useState(false);
   const [isFullKebabDropdownOpen, setIsFullKebabDropdownOpen] = React.useState(false);
@@ -67,19 +68,13 @@ export const NavHorizontal: React.FunctionComponent = () => {
       <NavList>
         {/* Preventing default click behavior on each NavItem for demo purposes only */}
         <NavItem preventDefault itemId={0} isActive={activeItem === 0} to="#">
-          Intro
+          Dashboard
         </NavItem>
         <NavItem preventDefault itemId={1} isActive={activeItem === 1} to="#">
-          Policy
+          User Management
         </NavItem>
         <NavItem preventDefault itemId={2} isActive={activeItem === 2} to="#">
-          Authentication
-        </NavItem>
-        <NavItem preventDefault itemId={3} isActive={activeItem === 3} to="#">
-          Network Services
-        </NavItem>
-        <NavItem preventDefault itemId={4} isActive={activeItem === 4} to="#">
-          Server
+          Monitoring
         </NavItem>
       </NavList>
     </Nav>
@@ -97,6 +92,7 @@ export const NavHorizontal: React.FunctionComponent = () => {
   const userDropdownItems = (
     <>
       <DropdownItem key="group 2 profile">My profile</DropdownItem>
+      <DropdownItem key="group 2 user">User management</DropdownItem>
       <DropdownItem key="group 2 logout">Logout</DropdownItem>
     </>
   );
@@ -179,7 +175,7 @@ export const NavHorizontal: React.FunctionComponent = () => {
                 ref={toggleRef}
                 isExpanded={isDropdownOpen}
                 onClick={onDropdownToggle}
-                icon={<Avatar src='/user.png' alt="" />}
+                icon={<Avatar src={imgAvatar} alt="" />}
                 isFullHeight
               >
                 Ned Username
@@ -196,7 +192,7 @@ export const NavHorizontal: React.FunctionComponent = () => {
     <Masthead>
       <MastheadMain>
         <MastheadBrand>
-          <Brand src='/netra_logo.png' alt="Open Netra" heights={{ default: '36px' }} />
+          <Brand src={pfLogo} alt="PatternFly" heights={{ default: '36px' }} />
         </MastheadBrand>
       </MastheadMain>
       <MastheadContent>{headerToolbar}</MastheadContent>
@@ -233,4 +229,4 @@ export const NavHorizontal: React.FunctionComponent = () => {
     </React.Fragment>
   );
 };
-export default NavHorizontal;
+export default NavbarAdmin;

@@ -46,7 +46,9 @@ export const LoginPageHideShowPassword: React.FunctionComponent = () => {
         
         // Assuming the API returns a token and stores it in local storage
         localStorage.setItem('authToken', response.data.access);
-        router.push('/dashboard');
+        localStorage.setItem('isStaff', response.data.is_staff);
+        localStorage.setItem('isSuperuser', response.data.is_superuser);
+        router.push('/');
   
       } catch (error) {
         setShowHelperText(true);
