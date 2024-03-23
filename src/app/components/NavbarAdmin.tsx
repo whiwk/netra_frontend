@@ -1,19 +1,16 @@
 import '@patternfly/patternfly/patternfly.css';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   Avatar,
   Brand,
   Button,
   ButtonVariant,
-  Card,
-  CardBody,
   Divider,
   Dropdown,
   DropdownGroup,
   DropdownItem,
   DropdownList,
-  Gallery,
-  GalleryItem,
   Masthead,
   MastheadMain,
   MastheadBrand,
@@ -23,11 +20,7 @@ import {
   NavItem,
   NavList,
   Page,
-  PageSection,
-  PageSectionVariants,
   SkipToContent,
-  TextContent,
-  Text,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -38,23 +31,39 @@ import HelpIcon from '@patternfly/react-icons/dist/esm/icons/help-icon';
 import QuestionCircleIcon from '@patternfly/react-icons/dist/esm/icons/question-circle-icon';
 import EllipsisVIcon from '@patternfly/react-icons/dist/esm/icons/ellipsis-v-icon';
 import BellIcon from '@patternfly/react-icons/dist/esm/icons/bell-icon';
-import imgAvatar from '@patternfly/react-core/src/components/assets/avatarImg.svg';
-import pfLogo from '@patternfly/react-core/src/demos/assets/pf-logo.svg';
 
 export const NavbarAdmin: React.FunctionComponent = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
-  const [isKebabDropdownOpen, setIsKebabDropdownOpen] = React.useState(false);
-  const [isFullKebabDropdownOpen, setIsFullKebabDropdownOpen] = React.useState(false);
-  const [activeItem, setActiveItem] = React.useState<string | number>(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isKebabDropdownOpen, setIsKebabDropdownOpen] = useState(false);
+  const [isFullKebabDropdownOpen, setIsFullKebabDropdownOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState<string | number>(0);
+  const router = useRouter();
 
-  const onNavSelect = (
-    _event: React.FormEvent<HTMLInputElement>,
-    selectedItem: {
-      groupId: number | string;
-      itemId: number | string;
-      to: string;
+  useEffect(() => {
+    const path = router.pathname;
+    switch (path) {
+      case '/admin/dashboard':
+        setActiveItem(0);
+        break;
+      case '/admin/usermanagement':
+        setActiveItem(1);
+        break;
+      case '/admin/monitoring':
+        setActiveItem(2);
+        break;
+      default:
+        // Set to a valid default value, like 0 or another appropriate value
+        setActiveItem(0);
+        break;
     }
-  ) => setActiveItem(selectedItem.itemId);
+  }, [router.pathname]);
+  
+
+  const onNavSelect = (itemId: number, to: string) => {
+    setActiveItem(itemId);
+    router.push(to);
+  };
+  
 
   const onDropdownToggle = () => setIsDropdownOpen((prevState) => !prevState);
   const onDropdownSelect = () => setIsDropdownOpen(false);
@@ -64,21 +73,22 @@ export const NavbarAdmin: React.FunctionComponent = () => {
   const onFullKebabSelect = () => setIsFullKebabDropdownOpen(false);
 
   const PageNav = (
-    <Nav onSelect={onNavSelect} aria-label="Nav" variant="horizontal">
+    <Nav aria-label="Nav" variant="horizontal">
       <NavList>
-        {/* Preventing default click behavior on each NavItem for demo purposes only */}
-        <NavItem preventDefault itemId={0} isActive={activeItem === 0} to="#">
+        <NavItem itemId={0} isActive={activeItem === 0} onClick={() => onNavSelect(0, '/admin/dashboard')}>
           Dashboard
         </NavItem>
-        <NavItem preventDefault itemId={1} isActive={activeItem === 1} to="#">
+        <NavItem itemId={1} isActive={activeItem === 1} onClick={() => onNavSelect(1, '/admin/usermanagement')}>
           User Management
         </NavItem>
-        <NavItem preventDefault itemId={2} isActive={activeItem === 2} to="#">
+        <NavItem itemId={2} isActive={activeItem === 2} onClick={() => onNavSelect(2, '/admin/monitoring')}>
           Monitoring
         </NavItem>
       </NavList>
     </Nav>
   );
+  
+  
   const kebabDropdownItems = (
     <>
       <DropdownItem>
@@ -92,7 +102,6 @@ export const NavbarAdmin: React.FunctionComponent = () => {
   const userDropdownItems = (
     <>
       <DropdownItem key="group 2 profile">My profile</DropdownItem>
-      <DropdownItem key="group 2 user">User management</DropdownItem>
       <DropdownItem key="group 2 logout">Logout</DropdownItem>
     </>
   );
@@ -175,10 +184,10 @@ export const NavbarAdmin: React.FunctionComponent = () => {
                 ref={toggleRef}
                 isExpanded={isDropdownOpen}
                 onClick={onDropdownToggle}
-                icon={<Avatar src={imgAvatar} alt="" />}
+                icon={<Avatar src={'/user.png'} alt="" />}
                 isFullHeight
               >
-                Ned Username
+                Username
               </MenuToggle>
             )}
           >
@@ -192,7 +201,7 @@ export const NavbarAdmin: React.FunctionComponent = () => {
     <Masthead>
       <MastheadMain>
         <MastheadBrand>
-          <Brand src={pfLogo} alt="PatternFly" heights={{ default: '36px' }} />
+          <Brand src='/netra_logo.png' alt="Open Netra" heights={{ default: '36px' }} />
         </MastheadBrand>
       </MastheadMain>
       <MastheadContent>{headerToolbar}</MastheadContent>
@@ -205,28 +214,10 @@ export const NavbarAdmin: React.FunctionComponent = () => {
   return (
     <React.Fragment>
       <Page header={Header} skipToContent={PageSkipToContent} mainContainerId={pageId}>
-        <PageSection variant={PageSectionVariants.light}>
-          <TextContent>
-            <Text component="h1">Main title</Text>
-            <Text component="p">
-              Body text should be Overpass Regular at 16px. It should have leading of 24px because <br />
-              of its relative line height of 1.5.
-            </Text>
-          </TextContent>
-        </PageSection>
-        <PageSection>
-          <Gallery hasGutter>
-            {Array.from({ length: 10 }).map((_value, index) => (
-              <GalleryItem key={index}>
-                <Card>
-                  <CardBody>This is a card</CardBody>
-                </Card>
-              </GalleryItem>
-            ))}
-          </Gallery>
-        </PageSection>
+        {/* The PageSection components and their contents are removed to render the navbar alone */}
       </Page>
     </React.Fragment>
   );
+  
 };
 export default NavbarAdmin;

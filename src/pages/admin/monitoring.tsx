@@ -1,11 +1,11 @@
 import AdminLayout from '../../app/components/layouts/LayoutAdmin';
 
-const AdminDashboardPage = () => {
+const AdminMonitoringPage = () => {
   return (
     <AdminLayout>
-      <h1>Admin Dashboard</h1>
+      <h1>Admin Monitoring</h1>
     </AdminLayout>
   );
 };
 
-export default AdminDashboardPage;
+export default AdminMonitoringPage;

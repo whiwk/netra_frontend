@@ -1,11 +1,11 @@
 import UserLayout from '../app/components/layouts/LayoutUser';
 
-const IntroPage = () => {
+const UserDashboardPage = () => {
   return (
     <UserLayout>
-      <h1>Intro</h1>
+      <h1>User Dashboard</h1>
     </UserLayout>
   );
 };
 
-export default IntroPage;
+export default UserDashboardPage;
