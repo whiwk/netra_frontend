@@ -37,9 +37,45 @@ export const NavbarUser: React.FunctionComponent = () => {
   const [isKebabDropdownOpen, setIsKebabDropdownOpen] = useState(false);
   const [isFullKebabDropdownOpen, setIsFullKebabDropdownOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string | number>(0);
+  const [username, setUsername] = useState('user');
+  const [level, setLevel] = useState('level: ');
+  const [completion, setCompletion] = useState('completion: ');
   const router = useRouter();
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      const authToken = localStorage.getItem('authToken');
+      if (!authToken) {
+        console.error('No auth token available');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://10.30.1.221/api/v1/user/information/', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setUsername(data.username);
+        setLevel(data.level);
+        setCompletion(data.completion);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setUsername('Error');
+        setLevel('Error');
+        setCompletion('Error');
+      }
+    };
+    fetchUserData();
+
     const path = router.pathname;
     switch (path) {
       case '/intro':
@@ -52,7 +88,6 @@ export const NavbarUser: React.FunctionComponent = () => {
         setActiveItem(2);
         break;
       default:
-        // Set to a valid default value, like 0 or another appropriate value
         setActiveItem(0);
         break;
     }
@@ -101,7 +136,7 @@ export const NavbarUser: React.FunctionComponent = () => {
   );
   const userDropdownItems = (
     <>
-      <DropdownItem key="group 2 profile">My profile</DropdownItem>
+      <DropdownItem key="group 2 profile">level: {level}<br />completion: {completion}%</DropdownItem>
       <DropdownItem key="group 2 logout">Logout</DropdownItem>
     </>
   );
@@ -184,10 +219,11 @@ export const NavbarUser: React.FunctionComponent = () => {
                 ref={toggleRef}
                 isExpanded={isDropdownOpen}
                 onClick={onDropdownToggle}
-                icon={<Avatar src={'/user.png'} alt="" />}
+                icon={<Avatar src={'/user.png'} alt="{username}" />}
                 isFullHeight
               >
-                Username
+                {username}
+
               </MenuToggle>
             )}
           >

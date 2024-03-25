@@ -1,9 +1,15 @@
 import AdminLayout from '../../app/components/layouts/LayoutAdmin';
+import Head from 'next/head';
 
 const AdminDashboardPage = () => {
   return (
     <AdminLayout>
-      <h1>Admin Dashboard</h1>
+      <Head>
+        <title>Open Netra | Dashboard</title>
+      </Head>
+      <div style={{ marginTop: '-580px' }}>
+        <h1>Admin Dashboard</h1>
+      </div>
     </AdminLayout>
   );
 };

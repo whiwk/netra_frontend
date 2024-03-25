@@ -1,9 +1,21 @@
 import UserLayout from '../app/components/layouts/LayoutUser';
+import React from 'react';
+import dynamic from 'next/dynamic';
+import Head from 'next/head';
+
+const CardWithImageAndActions = dynamic(() => import('../app/components/Intro'), {
+  ssr: false,
+});
 
 const IntroPage = () => {
   return (
     <UserLayout>
-      <h1>Intro</h1>
+      <Head>
+        <title>Open Netra | Intro</title>
+      </Head>
+      <div style={{ marginTop: '-580px' }}>
+        <CardWithImageAndActions />;
+      </div>
     </UserLayout>
   );
 };

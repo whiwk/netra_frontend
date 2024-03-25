@@ -20,7 +20,6 @@ import {
   NavItem,
   NavList,
   Page,
-  SkipToContent,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -37,10 +36,39 @@ export const NavbarAdmin: React.FunctionComponent = () => {
   const [isKebabDropdownOpen, setIsKebabDropdownOpen] = useState(false);
   const [isFullKebabDropdownOpen, setIsFullKebabDropdownOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string | number>(0);
+  const [username, setUsername] = useState('User');
   const router = useRouter();
 
   useEffect(() => {
     const path = router.pathname;
+    const fetchUserData = async () => {
+      try {
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) {
+          console.error('No auth token available');
+          return;
+        }
+
+        const response = await fetch('http://10.30.1.221/api/v1/user/information/', { 
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setUsername(data.username);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+    fetchUserData();
+
     switch (path) {
       case '/admin/dashboard':
         setActiveItem(0);
@@ -52,7 +80,6 @@ export const NavbarAdmin: React.FunctionComponent = () => {
         setActiveItem(2);
         break;
       default:
-        // Set to a valid default value, like 0 or another appropriate value
         setActiveItem(0);
         break;
     }
@@ -184,10 +211,10 @@ export const NavbarAdmin: React.FunctionComponent = () => {
                 ref={toggleRef}
                 isExpanded={isDropdownOpen}
                 onClick={onDropdownToggle}
-                icon={<Avatar src={'/user.png'} alt="" />}
+                icon={<Avatar src={'/user.png'} alt="username" />}
                 isFullHeight
               >
-                Username
+                admin
               </MenuToggle>
             )}
           >
@@ -208,13 +235,9 @@ export const NavbarAdmin: React.FunctionComponent = () => {
     </Masthead>
   );
 
-  const pageId = 'main-content-page-layout-horizontal-nav';
-  const PageSkipToContent = <SkipToContent href={`#${pageId}`}>Skip to content</SkipToContent>;
-
   return (
     <React.Fragment>
-      <Page header={Header} skipToContent={PageSkipToContent} mainContainerId={pageId}>
-        {/* The PageSection components and their contents are removed to render the navbar alone */}
+      <Page header={Header}>
       </Page>
     </React.Fragment>
   );
