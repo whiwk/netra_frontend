@@ -1,0 +1,12 @@
+diff --git a/node_modules/@patternfly/react-styles/css/components/Login/login.css b/node_modules/@patternfly/react-styles/css/components/Login/login.css
+index 64059e0..b4721b1 100644
+--- a/node_modules/@patternfly/react-styles/css/components/Login/login.css
++++ b/node_modules/@patternfly/react-styles/css/components/Login/login.css
+@@ -167,6 +167,7 @@
+   margin-block-end: var(--pf-v5-c-login__main--MarginBottom);
+   background-color: var(--pf-v5-c-login__main--BackgroundColor);
+   box-shadow: var(--pf-v5-c-login__main--BoxShadow);
++  border-radius: 10px;
+ }
+ .pf-v5-c-login__main > :first-child:not(.pf-v5-c-login__main-header) {
+   padding-block-start: var(--pf-v5-c-login__main-header--PaddingTop);
