@@ -21,6 +21,7 @@ import {
   NavList,
   Page,
   SkipToContent,
+  Spinner,
   Toolbar,
   ToolbarContent,
   ToolbarGroup,
@@ -39,8 +40,33 @@ export const NavbarAdmin: React.FunctionComponent = () => {
   const [isKebabDropdownOpen, setIsKebabDropdownOpen] = useState(false);
   const [isFullKebabDropdownOpen, setIsFullKebabDropdownOpen] = useState(false);
   const [activeItem, setActiveItem] = useState<string | number>(0);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
+
+  const handleLogout = async () => {
+    setIsLoading(true);
+    const refreshToken = localStorage.getItem('refreshToken');
+    if (refreshToken) {
+      try {
+        await fetch('http://10.30.1.221/api/v1/token/blacklist/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refresh: refreshToken }),
+        });
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
+    }
+    // Clear local storage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('refreshToken');
+    setIsLoading(false);
+    // Redirect to login page
+    router.replace('/auth/login');
+  };
 
   useEffect(() => {
     const navItems: { [key: string]: number } = {
@@ -99,9 +125,12 @@ export const NavbarAdmin: React.FunctionComponent = () => {
       </DropdownItem>
     </>
   );
+  
   const userDropdownItems = (
     <>
-      <DropdownItem key="group 2 logout">Logout</DropdownItem>
+      <DropdownItem key="group 2 logout" icon={<Avatar src={'/logout.png'} alt="Logout" />} onClick={handleLogout}>
+        {isLoading ? <Spinner size="sm" /> : 'Logout'}
+      </DropdownItem>
     </>
   );
 
@@ -183,7 +212,7 @@ export const NavbarAdmin: React.FunctionComponent = () => {
                 ref={toggleRef}
                 isExpanded={isDropdownOpen}
                 onClick={onDropdownToggle}
-                icon={<Avatar src={'/user.png'} alt="username" />}
+                icon={<Avatar src={'/profile.png'} alt="username" />}
                 isFullHeight
               >
                 {user ? user.username : 'Loading...'}
