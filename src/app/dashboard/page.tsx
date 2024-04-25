@@ -9,6 +9,7 @@ import ComponentCard from './component';
 import { Tab, ToggleGroup, ToggleGroupItem, ToggleGroupItemProps } from '@patternfly/react-core';//import table for input
 import { Grid, GridItem, PageSection } from '@patternfly/react-core'; //import layout and page section
 import { Card, CardTitle, CardBody, CardFooter } from '@patternfly/react-core'; //import card
+import TopologyCustomEdgeDemo from './topology1';
 
 //layout
 const WithGutters: React.FC = () => (
@@ -37,9 +38,6 @@ const UserDashboard = () => {
     return null;
   }
 
-  
-
-
 
   return (
     <UserLayout>
@@ -49,10 +47,10 @@ const UserDashboard = () => {
       <PageSection>
         <Grid hasGutter>
           <GridItem span={12} rowSpan={3}>
-            <Card ouiaId="BasicCard" style={{ height: '700px' }}>
-              <CardTitle>5G Topology</CardTitle>
+            <Card ouiaId="BasicCard" style={{ height: '500px' }}>
+              <CardTitle>Topology Graph</CardTitle>
               <CardBody>
-                <LayoutsDemo />
+                <TopologyCustomEdgeDemo />
               </CardBody>
             </Card>
           </GridItem>

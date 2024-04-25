@@ -14,10 +14,11 @@ import { RegionsIcon as Icon1, FolderOpenIcon as Icon2 } from '@patternfly/react
 import {
   action,
   createTopologyControlButtons,
-  defaultControlButtonsOptions,
   DefaultEdge,
   DefaultGroup,
   DefaultNode,
+  EdgeStyle,
+  EdgeAnimationSpeed,
   GraphComponent,
   GRAPH_LAYOUT_END_EVENT,
   ModelKind,
@@ -60,6 +61,8 @@ const NODES: NodeModel[] = [
     height: NODE_DIAMETER,
     shape: NodeShape.rhombus,
     status: NodeStatus.info,
+    x: 50,
+    y: 50,
     data: {
       isAlternate: false
     }
@@ -67,11 +70,13 @@ const NODES: NodeModel[] = [
   {
     id: 'node-1',
     type: 'node',
-    label: 'Node 1',
+    label: 'RRU',
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NODE_SHAPE,
     status: NodeStatus.success,
+    x: 300,
+    y: 50,
     data: {
       isAlternate: false
     }
@@ -79,11 +84,13 @@ const NODES: NodeModel[] = [
   {
     id: 'node-2',
     type: 'node',
-    label: 'Node 2',
+    label: 'DU',
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NODE_SHAPE,
     status: NodeStatus.warning,
+    x: 400,
+    y: 50,
     data: {
       isAlternate: true
     }
@@ -91,11 +98,13 @@ const NODES: NodeModel[] = [
   {
     id: 'node-3',
     type: 'node',
-    label: 'Node 3',
+    label: 'CU',
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NODE_SHAPE,
     status: NodeStatus.info,
+    x: 500,
+    y: 50,
     data: {
       isAlternate: false
     }
@@ -103,11 +112,13 @@ const NODES: NodeModel[] = [
   {
     id: 'node-4',
     type: 'node',
-    label: 'Node 4',
+    label: 'UPF',
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NODE_SHAPE,
     status: NodeStatus.default,
+    x: 700,
+    y: 50,
     data: {
       isAlternate: true
     }
@@ -115,20 +126,42 @@ const NODES: NodeModel[] = [
   {
     id: 'node-5',
     type: 'node',
-    label: 'Node 5',
+    label: 'AMF',
     width: NODE_DIAMETER,
     height: NODE_DIAMETER,
     shape: NODE_SHAPE,
+    x: 800,
+    y: 50,
     data: {
       isAlternate: false
     }
   },
   {
     id: 'Group-1',
-    children: ['node-0', 'node-1', 'node-2'],
+    children: ['node-0'],
     type: 'group',
     group: true,
-    label: 'Group-1',
+    label: 'Fronthaul',
+    style: {
+      padding: 40
+    }
+  },
+  {
+    id: 'Group-2',
+    children: ['node-1', 'node-2', 'node-3'],
+    type: 'group',
+    group: true,
+    label: 'Midhaul',
+    style: {
+      padding: 40
+    }
+  },
+  {
+    id: 'Group-3',
+    children: ['node-4', 'node-5'],
+    type: 'group',
+    group: true,
+    label: 'Backhaul',
     style: {
       padding: 40
     }
@@ -138,15 +171,17 @@ const NODES: NodeModel[] = [
 const EDGES = [
   {
     id: 'edge-node-4-node-5',
-    type: 'edge',
+    type: 'data-edge',
     source: 'node-4',
-    target: 'node-5'
+    target: 'node-5',
+    edgeStyle: EdgeStyle.dashedMd,
+    animationSpeed: EdgeAnimationSpeed.medium
   },
   {
-    id: 'edge-node-0-node-2',
+    id: 'edge-node-0-node-1',
     type: 'edge',
     source: 'node-0',
-    target: 'node-2'
+    target: 'node-1'
   }
 ];
 
@@ -219,7 +254,7 @@ export const LayoutsDemo: React.FC = () => {
       graph: {
         id: 'g1',
         type: 'graph',
-        layout: 'ColaNoForce'
+        layout: 'Cola'
       }
     };
 

@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import { useRouter } from 'next/navigation'; // Import useRouter for navigation
 
 interface User {
   username: string;
@@ -22,12 +23,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [retryCount, setRetryCount] = useState(0);
+  const router = useRouter(); // Use the useRouter hook
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('refreshToken');
+    router.replace('/auth/login'); // Redirect to login page
+  };
 
   const fetchUserData = async () => {
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
       console.error('Auth token not available');
-      setIsLoading(false);
+      handleLogout();
       return;
     }
 
@@ -40,7 +48,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         },
       });
 
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        if (response.status === 307) {
+          handleLogout(); // Handle 401 unauthorized by logging out
+          return;
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       
       const userData = await response.json();
       setUser({
@@ -54,7 +68,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.error('Error fetching user data:', error);
       setIsLoading(false);
       if (retryCount < 3) {
-        setTimeout(refreshAuthToken, 5000); // Retry token refresh after 5 seconds
+        setTimeout(refreshAuthToken, 5000); // Retry token refresh after 5 seconds unless it's a 401 error
       }
     }
   };
@@ -64,7 +78,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const refreshToken = localStorage.getItem('refreshToken');
     if (!refreshToken) {
       console.error('No refresh token available');
-      setIsLoading(false);
+      handleLogout();
       return;
     }
 
@@ -86,6 +100,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.error('Error refreshing auth token:', error);
       setIsLoading(false);
       setRetryCount(retryCount + 1);
+      if (retryCount >= 3) {
+        handleLogout(); // If all retries fail, log out
+      }
     }
   };
 
