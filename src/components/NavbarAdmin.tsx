@@ -226,7 +226,7 @@ export const NavbarAdmin: React.FunctionComponent = () => {
     </Toolbar>
   );
   const Header = (
-    <Masthead>
+    <Masthead style={{ position: 'fixed', top: '0', width: '100%', zIndex: '1020' }}>
       <MastheadMain>
         <MastheadBrand>
           <Brand src='/netra_logo.png' alt="Open Netra" heights={{ default: '36px' }} />
@@ -241,7 +241,7 @@ export const NavbarAdmin: React.FunctionComponent = () => {
 
   return (
     <React.Fragment>
-      <Page header={Header} skipToContent={PageSkipToContent} mainContainerId={pageId}>
+      <Page header={Header} style={{ paddingTop: '4rem'}}>
         {/* The PageSection components and their contents are removed to render the navbar alone */}
       </Page>
     </React.Fragment>

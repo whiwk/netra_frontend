@@ -46,11 +46,52 @@ const UserDashboard = () => {
       </div>
       <PageSection>
         <Grid hasGutter>
-          <GridItem span={12} rowSpan={3}>
-            <Card ouiaId="BasicCard" style={{ height: '500px' }}>
-              <CardTitle>Topology Graph</CardTitle>
-              <CardBody>
+          <GridItem span={8} rowSpan={3} style={{
+            marginTop: '-10px',
+            marginLeft: '-10px'
+          }}>
+            <Card ouiaId="BasicCard" style={{ 
+              height: '500px', 
+              borderRadius: '6px'
+            }}>
+              <CardTitle style={{ 
+                marginTop: '-20px', 
+                marginLeft: '-16px',
+                marginRight: '-16px', 
+              }}
+              >Topology Graph</CardTitle>
+              <CardBody style={{ 
+                marginTop: '-16px', 
+                marginLeft: '-24px',
+                marginRight: '-24px',
+                marginBottom: '-24px', 
+              }}>
                 <TopologyCustomEdgeDemo />
+              </CardBody>
+            </Card>
+          </GridItem>
+
+          <GridItem span={4} rowSpan={6} style={{
+            marginTop: '-10px',
+            marginLeft: '0px',
+            marginRight: '-10px'
+          }}>
+            <Card ouiaId="BasicCard" style={{ 
+              height: '500px', 
+              borderRadius: '6px'
+              }}>
+              <CardTitle style={{ 
+                marginTop: '-20px', 
+                marginLeft: '-16px',
+                marginRight: '-16px', 
+              }}
+              >Charts</CardTitle>
+              <CardBody style={{ 
+                marginTop: '-16px', 
+                marginLeft: '-24px',
+                marginRight: '-24px',
+                marginBottom: '-24px', 
+              }}>
               </CardBody>
             </Card>
           </GridItem>

@@ -226,18 +226,20 @@ export const NavbarUser: React.FunctionComponent = () => {
       </ToolbarContent>
     </Toolbar>
   );
+
   const Header = (
-    <Masthead>
-        <MastheadBrand>
-          <Brand src='/netra_logo.png' alt="Open Netra" heights={{ default: '36px' }} />
-        </MastheadBrand>
+    <Masthead style={{ position: 'fixed', top: '0', width: '100%', zIndex: '1020' }}>
+      <MastheadBrand>
+        <Brand src='/netra_logo.png' alt="Open Netra" heights={{ default: '36px' }} />
+      </MastheadBrand>
       <MastheadContent>{headerToolbar}</MastheadContent>
     </Masthead>
   );
+  
 
   return (
     <React.Fragment>
-      <Page header={Header}>
+      <Page header={Header} style={{ paddingTop: '4rem'}}>
       </Page>
     </React.Fragment>
   );

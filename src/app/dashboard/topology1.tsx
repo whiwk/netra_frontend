@@ -4,9 +4,12 @@ import * as React from 'react';
 import { MobileAltIcon as Icon1 } from '@patternfly/react-icons';
 
 import {
+  action,
   ColaLayout,
   ComponentFactory,
   CREATE_CONNECTOR_DROP_TYPE,
+  createTopologyControlButtons,
+  defaultControlButtonsOptions,
   DefaultEdge,
   DefaultGroup,
   DefaultNode,
@@ -29,6 +32,7 @@ import {
   NodeShape,
   NodeStatus,
   SELECTION_EVENT,
+  TopologyControlBar,
   TopologySideBar,
   TopologyView,
   Visualization,
@@ -41,6 +45,7 @@ import {
   withDndDrop,
   withDragNode,
   WithDragNodeProps,
+  withPanZoom,
   withSelection,
   WithSelectionProps
 } from '@patternfly/react-topology';
@@ -115,12 +120,20 @@ const customComponentFactory: ComponentFactory = (kind: ModelKind, type: string)
   switch (type) {
     case 'group':
       return DefaultGroup;
+    case 'data-edge':
+      return DataEdge;
     default:
       switch (kind) {
         case ModelKind.graph:
-          return GraphComponent;
+          return withPanZoom() (GraphComponent);
         case ModelKind.node:
-          return withContextMenu(() => contextMenu)(withSelection()(CustomNode));
+          return withContextMenu(() => contextMenu)(
+            withDndDrop(nodeDropTargetSpec([CONNECTOR_SOURCE_DROP, CONNECTOR_TARGET_DROP, CREATE_CONNECTOR_DROP_TYPE]))(
+              withDragNode(nodeDragSourceSpec('node', true, true))(
+                withSelection()(CustomNode)
+              )
+            )
+          );
         case ModelKind.edge:
           return withSelection() (DefaultEdge);
         default:
@@ -141,8 +154,8 @@ const NODES: NodeModel[] = [
     height: NODE_DIAMETER,
     shape: NodeShape.rect,
     status: NodeStatus.danger,
-    x: 100,
-    y: 100
+    x: 50,
+    y: 180
   },
   {
     id: 'RRU',
@@ -153,8 +166,8 @@ const NODES: NodeModel[] = [
     height: NODE_DIAMETER,
     shape: NodeShape.ellipse,
     status: NodeStatus.warning,
-    x: 400,
-    y: 100
+    x: 250,
+    y: 180
   },
   {
     id: 'DU',
@@ -165,8 +178,8 @@ const NODES: NodeModel[] = [
     height: NODE_DIAMETER,
     shape: NodeShape.ellipse,
     status: NodeStatus.warning,
-    x: 600,
-    y: 100
+    x: 350,
+    y: 180
   },
   {
     id: 'CU',
@@ -177,8 +190,8 @@ const NODES: NodeModel[] = [
     height: NODE_DIAMETER,
     shape: NodeShape.ellipse,
     status: NodeStatus.warning,
-    x: 700,
-    y: 100
+    x: 450,
+    y: 180
   },
   {
     id: 'AMF',
@@ -189,8 +202,8 @@ const NODES: NodeModel[] = [
     height: NODE_DIAMETER,
     shape: NodeShape.octagon,
     status: NodeStatus.success,
-    x: 1050,
-    y: 200
+    x: 700,
+    y: 60
   },
   {
     id: 'UPF',
@@ -201,8 +214,8 @@ const NODES: NodeModel[] = [
     height: NODE_DIAMETER,
     shape: NodeShape.octagon,
     status: NodeStatus.success,
-    x: 1050,
-    y: 50
+    x: 700,
+    y: 250
   },
   {
     id: 'Group-1',
@@ -211,7 +224,7 @@ const NODES: NodeModel[] = [
     group: true,
     label: 'Fronthaul',
     style: {
-      padding: 40
+      padding: 20
     }
   },
   {
@@ -221,7 +234,7 @@ const NODES: NodeModel[] = [
     group: true,
     label: 'Midhaul',
     style: {
-      padding: 40
+      padding: 20
     }
   },
   {
@@ -231,7 +244,7 @@ const NODES: NodeModel[] = [
     group: true,
     label: 'Backhaul',
     style: {
-      padding: 40
+      padding: 20
     }
   }
 ];
@@ -242,7 +255,7 @@ const EDGES: EdgeModel[] = [
     type: 'data-edge',
     source: 'UE',
     target: 'RRU',
-    edgeStyle: EdgeStyle.dashedLg,
+    edgeStyle: EdgeStyle.dashedMd,
     animationSpeed: EdgeAnimationSpeed.mediumSlow
   },
   {
@@ -250,7 +263,7 @@ const EDGES: EdgeModel[] = [
     type: 'data-edge',
     source: 'RRU',
     target: 'DU',
-    edgeStyle: EdgeStyle.dashedLg,
+    edgeStyle: EdgeStyle.dashedMd,
     animationSpeed: EdgeAnimationSpeed.mediumSlow
   },
   {
@@ -258,7 +271,7 @@ const EDGES: EdgeModel[] = [
     type: 'data-edge',
     source: 'DU',
     target: 'CU',
-    edgeStyle: EdgeStyle.dashedLg,
+    edgeStyle: EdgeStyle.dashedMd,
     animationSpeed: EdgeAnimationSpeed.mediumSlow
   },
   {
@@ -266,7 +279,7 @@ const EDGES: EdgeModel[] = [
     type: 'data-edge',
     source: 'CU',
     target: 'AMF',
-    edgeStyle: EdgeStyle.dashedLg,
+    edgeStyle: EdgeStyle.dashedMd,
     animationSpeed: EdgeAnimationSpeed.mediumSlow
   },
   {
@@ -274,7 +287,7 @@ const EDGES: EdgeModel[] = [
     type: 'data-edge',
     source: 'CU',
     target: 'UPF',
-    edgeStyle: EdgeStyle.dashedLg,
+    edgeStyle: EdgeStyle.dashedMd,
     animationSpeed: EdgeAnimationSpeed.mediumSlow
   }
 ];
@@ -314,8 +327,37 @@ export const TopologyCustomEdgeDemo: React.FC = () => {
     </TopologySideBar>
   );
 
+  const controlButtons = createTopologyControlButtons({
+    ...defaultControlButtonsOptions,
+    zoomInCallback: action(() => {
+      controller.getGraph().scaleBy(4 / 3);
+    }),
+    zoomOutCallback: action(() => {
+      controller.getGraph().scaleBy(0.75);
+    }),
+    fitToScreenCallback: action(() => {
+      controller.getGraph().fit(80);
+    }),
+    resetViewCallback: action(() => {
+      controller.getGraph().reset();
+    }),
+    legend: false,
+    // Set text properties to undefined or empty strings to remove labels
+    zoomInIconOnly: true,
+    zoomOutIconOnly: true,
+    fitToScreenIconOnly: true,
+    resetViewIconOnly: true
+  });
+
+  const topologyControlBar = (
+    <TopologyControlBar controlButtons={controlButtons} />
+  );
+
   return (
-    <TopologyView sideBar={topologySideBar}>
+    <TopologyView 
+      sideBar={topologySideBar}
+      controlBar={topologyControlBar}
+    >
       <VisualizationProvider controller={controller}>
         <VisualizationSurface state={{ selectedIds }} />
       </VisualizationProvider>
