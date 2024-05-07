@@ -1,251 +1,299 @@
 import * as React from 'react';
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownList,
-  MenuToggle,
-  MenuToggleElement,
-  Split,
-  SplitItem,
-  ToolbarItem
-} from '@patternfly/react-core';
+
 // eslint-disable-next-line patternfly-react/import-tokens-icons
-import { RegionsIcon as Icon1, FolderOpenIcon as Icon2 } from '@patternfly/react-icons';
+import { MobileAltIcon as Icon1 } from '@patternfly/react-icons';
+
 import {
   action,
+  ColaLayout,
+  ComponentFactory,
+  CREATE_CONNECTOR_DROP_TYPE,
   createTopologyControlButtons,
+  defaultControlButtonsOptions,
   DefaultEdge,
   DefaultGroup,
   DefaultNode,
-  EdgeStyle,
+  Edge,
   EdgeAnimationSpeed,
+  EdgeModel,
+  EdgeStyle,
+  EdgeTerminalType,
+  Graph,
   GraphComponent,
-  GRAPH_LAYOUT_END_EVENT,
+  LabelPosition,
+  Layout,
+  LayoutFactory,
+  Model,
   ModelKind,
+  Node,
+  nodeDragSourceSpec,
+  nodeDropTargetSpec,
   NodeModel,
   NodeShape,
-  observer,
-  TopologyView,
+  NodeStatus,
+  SELECTION_EVENT,
   TopologyControlBar,
+  TopologySideBar,
+  TopologyView,
   Visualization,
   VisualizationProvider,
   VisualizationSurface,
-  ComponentFactory,
-  Model,
-  Node,
-  NodeStatus,
-  Graph,
-  Layout,
-  LayoutFactory,
-  ForceLayout,
-  ColaLayout,
-  ConcentricLayout,
-  DagreLayout,
-  GridLayout,
-  BreadthFirstLayout,
-  ColaGroupsLayout,
+  withContextMenu,
+  WithContextMenuProps,
+  ContextMenuSeparator,
+  ContextMenuItem,
+  withDndDrop,
   withDragNode,
   WithDragNodeProps,
-  withPanZoom
+  withPanZoom,
+  withSelection,
+  WithSelectionProps
 } from '@patternfly/react-topology';
 
-const NODE_DIAMETER = 75;
-const NODE_SHAPE = NodeShape.ellipse;
-
-const NODES: NodeModel[] = [
-  {
-    id: 'node-0',
-    type: 'node',
-    label: 'UE',
-    width: NODE_DIAMETER,
-    height: NODE_DIAMETER,
-    shape: NodeShape.rhombus,
-    status: NodeStatus.info,
-    x: 50,
-    y: 50,
-    data: {
-      isAlternate: false
-    }
-  },
-  {
-    id: 'node-1',
-    type: 'node',
-    label: 'RRU',
-    width: NODE_DIAMETER,
-    height: NODE_DIAMETER,
-    shape: NODE_SHAPE,
-    status: NodeStatus.success,
-    x: 300,
-    y: 50,
-    data: {
-      isAlternate: false
-    }
-  },
-  {
-    id: 'node-2',
-    type: 'node',
-    label: 'DU',
-    width: NODE_DIAMETER,
-    height: NODE_DIAMETER,
-    shape: NODE_SHAPE,
-    status: NodeStatus.warning,
-    x: 400,
-    y: 50,
-    data: {
-      isAlternate: true
-    }
-  },
-  {
-    id: 'node-3',
-    type: 'node',
-    label: 'CU',
-    width: NODE_DIAMETER,
-    height: NODE_DIAMETER,
-    shape: NODE_SHAPE,
-    status: NodeStatus.info,
-    x: 500,
-    y: 50,
-    data: {
-      isAlternate: false
-    }
-  },
-  {
-    id: 'node-4',
-    type: 'node',
-    label: 'UPF',
-    width: NODE_DIAMETER,
-    height: NODE_DIAMETER,
-    shape: NODE_SHAPE,
-    status: NodeStatus.default,
-    x: 700,
-    y: 50,
-    data: {
-      isAlternate: true
-    }
-  },
-  {
-    id: 'node-5',
-    type: 'node',
-    label: 'AMF',
-    width: NODE_DIAMETER,
-    height: NODE_DIAMETER,
-    shape: NODE_SHAPE,
-    x: 800,
-    y: 50,
-    data: {
-      isAlternate: false
-    }
-  },
-  {
-    id: 'Group-1',
-    children: ['node-0'],
-    type: 'group',
-    group: true,
-    label: 'Fronthaul',
-    style: {
-      padding: 40
-    }
-  },
-  {
-    id: 'Group-2',
-    children: ['node-1', 'node-2', 'node-3'],
-    type: 'group',
-    group: true,
-    label: 'Midhaul',
-    style: {
-      padding: 40
-    }
-  },
-  {
-    id: 'Group-3',
-    children: ['node-4', 'node-5'],
-    type: 'group',
-    group: true,
-    label: 'Backhaul',
-    style: {
-      padding: 40
-    }
-  }
-];
-
-const EDGES = [
-  {
-    id: 'edge-node-4-node-5',
-    type: 'data-edge',
-    source: 'node-4',
-    target: 'node-5',
-    edgeStyle: EdgeStyle.dashedMd,
-    animationSpeed: EdgeAnimationSpeed.medium
-  },
-  {
-    id: 'edge-node-0-node-1',
-    type: 'edge',
-    source: 'node-0',
-    target: 'node-1'
-  }
-];
-
-const customLayoutFactory: LayoutFactory = (type: string, graph: Graph): Layout | undefined => {
-  switch (type) {
-    case 'BreadthFirst':
-      return new BreadthFirstLayout(graph);
-    case 'Cola':
-      return new ColaLayout(graph);
-    case 'ColaNoForce':
-      return new ColaLayout(graph, { layoutOnDrag: false });
-    case 'Concentric':
-      return new ConcentricLayout(graph);
-    case 'Dagre':
-      return new DagreLayout(graph);
-    case 'Force':
-      return new ForceLayout(graph);
-    case 'Grid':
-      return new GridLayout(graph);
-    case 'ColaGroups':
-      return new ColaGroupsLayout(graph, { layoutOnDrag: false });
-    default:
-      return new ColaLayout(graph, { layoutOnDrag: false });
-  }
-};
-
-type CustomNodeProps = {
+interface CustomNodeProps {
   element: Node;
-} & WithDragNodeProps;
+}
 
-const CustomNode: React.FC<CustomNodeProps> = observer(({ element, ...rest }) => {
-  const data = element.getData();
-  const Icon = data.isAlternate ? Icon2 : Icon1;
+interface DataEdgeProps {
+  element: Edge;
+}
+
+const CONNECTOR_SOURCE_DROP = 'connector-src-drop';
+const CONNECTOR_TARGET_DROP = 'connector-target-drop';
+
+const DataEdge: React.FC<DataEdgeProps> = ({ element, ...rest }) => (
+  <DefaultEdge
+    element={element}
+    startTerminalType={EdgeTerminalType.cross}
+    endTerminalType={EdgeTerminalType.directionalAlt}
+    {...rest}
+  />
+);
+
+const CustomNode: React.FC<CustomNodeProps & WithSelectionProps & WithDragNodeProps & WithContextMenuProps> = ({
+  element,
+  selected,
+  onContextMenu, 
+  contextMenuOpen,
+  onSelect,
+  ...rest
+}) => {
+  const Icon = Icon1;
 
   return (
-    <DefaultNode element={element} {...rest}>
+    <DefaultNode
+      element={element}
+      onContextMenu={onContextMenu}
+      contextMenuOpen={contextMenuOpen}
+      showStatusDecorator
+      selected={selected}
+      onSelect={onSelect}
+      labelPosition={LabelPosition.right}
+      {...rest}
+    >
       <g transform={`translate(25, 25)`}>
         <Icon style={{ color: '#393F44' }} width={25} height={25} />
       </g>
     </DefaultNode>
   );
-});
+};
+
+const customLayoutFactory: LayoutFactory = (type: string, graph: Graph): Layout | undefined =>
+  new ColaLayout(graph, { layoutOnDrag: false });
 
 const customComponentFactory: ComponentFactory = (kind: ModelKind, type: string) => {
+  const contextMenuItem = (label: string, i: number): React.ReactElement => {
+    if (label === '-') {
+      return <ContextMenuSeparator component="li" key={`separator:${i.toString()}`} />;
+    }
+    return (
+      // eslint-disable-next-line no-alert
+      <ContextMenuItem key={label} onClick={() => alert(`Selected: ${label}`)}>
+        {label}
+      </ContextMenuItem>
+    );
+  };
+
+  const createContextMenuItems = (...labels: string[]): React.ReactElement[] => labels.map(contextMenuItem);
+
+  const contextMenu = createContextMenuItems('Start', 'Stop', 'Restart',);
   switch (type) {
     case 'group':
       return DefaultGroup;
+    case 'data-edge':
+      return DataEdge;
     default:
       switch (kind) {
         case ModelKind.graph:
-          return withPanZoom()(GraphComponent);
+          return withPanZoom() (GraphComponent);
         case ModelKind.node:
-          return withDragNode()(CustomNode);
+          return withContextMenu(() => contextMenu)(
+            withDndDrop(nodeDropTargetSpec([CONNECTOR_SOURCE_DROP, CONNECTOR_TARGET_DROP, CREATE_CONNECTOR_DROP_TYPE]))(
+              withDragNode(nodeDragSourceSpec('node', true, true))(
+                withSelection()(CustomNode)
+              )
+            )
+          );
         case ModelKind.edge:
-          return DefaultEdge;
+          return withSelection() (DefaultEdge);
         default:
           return undefined;
       }
   }
 };
 
-export const LayoutsDemo: React.FC = () => {
-  const [layoutDropdownOpen, setLayoutDropdownOpen] = React.useState(false);
-  const [layout, setLayout] = React.useState<string>('ColaNoForce');
+const NODE_DIAMETER = 75;
+
+const NODES: NodeModel[] = [
+  {
+    id: 'UE',
+    type: 'node',
+    label: 'UE',
+    labelPosition: LabelPosition.bottom,
+    width: NODE_DIAMETER,
+    height: NODE_DIAMETER,
+    shape: NodeShape.rect,
+    status: NodeStatus.danger,
+    x: 50,
+    y: 180
+  },
+  {
+    id: 'RRU',
+    type: 'node',
+    label: 'RRU',
+    labelPosition: LabelPosition.bottom,
+    width: NODE_DIAMETER,
+    height: NODE_DIAMETER,
+    shape: NodeShape.ellipse,
+    status: NodeStatus.warning,
+    x: 250,
+    y: 180
+  },
+  {
+    id: 'DU',
+    type: 'node',
+    label: 'DU',
+    labelPosition: LabelPosition.bottom,
+    width: NODE_DIAMETER,
+    height: NODE_DIAMETER,
+    shape: NodeShape.ellipse,
+    status: NodeStatus.warning,
+    x: 350,
+    y: 180
+  },
+  {
+    id: 'CU',
+    type: 'node',
+    label: 'CU',
+    labelPosition: LabelPosition.bottom,
+    width: NODE_DIAMETER,
+    height: NODE_DIAMETER,
+    shape: NodeShape.ellipse,
+    status: NodeStatus.warning,
+    x: 450,
+    y: 180
+  },
+  {
+    id: 'AMF',
+    type: 'node',
+    label: 'AMF',
+    labelPosition: LabelPosition.bottom,
+    width: NODE_DIAMETER,
+    height: NODE_DIAMETER,
+    shape: NodeShape.octagon,
+    status: NodeStatus.success,
+    x: 700,
+    y: 60
+  },
+  {
+    id: 'UPF',
+    type: 'node',
+    label: 'UPF',
+    labelPosition: LabelPosition.bottom,
+    width: NODE_DIAMETER,
+    height: NODE_DIAMETER,
+    shape: NodeShape.octagon,
+    status: NodeStatus.success,
+    x: 700,
+    y: 250
+  },
+  {
+    id: 'Group-1',
+    children: ['UE'],
+    type: 'group',
+    group: true,
+    label: 'Fronthaul',
+    style: {
+      padding: 20
+    }
+  },
+  {
+    id: 'Group-2',
+    children: ['RRU', 'DU', 'CU'],
+    type: 'group',
+    group: true,
+    label: 'Midhaul',
+    style: {
+      padding: 20
+    }
+  },
+  {
+    id: 'Group-3',
+    children: ['AMF', 'UPF'],
+    type: 'group',
+    group: true,
+    label: 'Backhaul',
+    style: {
+      padding: 20
+    }
+  }
+];
+
+const EDGES: EdgeModel[] = [
+  {
+    id: `UE to RRU`,
+    type: 'data-edge',
+    source: 'UE',
+    target: 'RRU',
+    edgeStyle: EdgeStyle.dashedMd,
+    animationSpeed: EdgeAnimationSpeed.mediumSlow
+  },
+  {
+    id: `RRU to DU`,
+    type: 'data-edge',
+    source: 'RRU',
+    target: 'DU',
+    edgeStyle: EdgeStyle.dashedMd,
+    animationSpeed: EdgeAnimationSpeed.mediumSlow
+  },
+  {
+    id: `DU to CU`,
+    type: 'data-edge',
+    source: 'DU',
+    target: 'CU',
+    edgeStyle: EdgeStyle.dashedMd,
+    animationSpeed: EdgeAnimationSpeed.mediumSlow
+  },
+  {
+    id: `CU to AMF`,
+    type: 'data-edge',
+    source: 'CU',
+    target: 'AMF',
+    edgeStyle: EdgeStyle.dashedMd,
+    animationSpeed: EdgeAnimationSpeed.mediumSlow
+  },
+  {
+    id: `CU to UPF`,
+    type: 'data-edge',
+    source: 'CU',
+    target: 'UPF',
+    edgeStyle: EdgeStyle.dashedMd,
+    animationSpeed: EdgeAnimationSpeed.mediumSlow
+  }
+];
+
+export const TopologyCustomEdgeDemo: React.FC = () => {
+  const [selectedIds, setSelectedIds] = React.useState<string[]>([]);
 
   const controller = React.useMemo(() => {
     const model: Model = {
@@ -262,66 +310,53 @@ export const LayoutsDemo: React.FC = () => {
     newController.registerLayoutFactory(customLayoutFactory);
     newController.registerComponentFactory(customComponentFactory);
 
-    newController.addEventListener(GRAPH_LAYOUT_END_EVENT, () => {
-      newController.getGraph().fit(80);
-    });
+    newController.addEventListener(SELECTION_EVENT, setSelectedIds);
 
     newController.fromModel(model, false);
+
     return newController;
   }, []);
 
-  const updateLayout = (newLayout: string) => {
-    setLayout(newLayout);
-    setLayoutDropdownOpen(false);
-  };
+  const topologySideBar = (
+    <TopologySideBar
+      className="topology-example-sidebar"
+      show={selectedIds.length > 0}
+      onClose={() => setSelectedIds([])}
+    >
+      <div style={{ marginTop: 27, marginLeft: 20, height: '800px' }}>{selectedIds[0]}</div>
+    </TopologySideBar>
+  );
 
-  React.useEffect(() => {
-    if (controller && controller.getGraph().getLayout() !== layout) {
-      const model: Model = {
-        nodes: NODES,
-        edges: EDGES,
-        graph: {
-          id: 'g1',
-          type: 'graph',
-          layout
-        }
-      };
+  const controlButtons = createTopologyControlButtons({
+    ...defaultControlButtonsOptions,
+    zoomInCallback: action(() => {
+      controller.getGraph().scaleBy(4 / 3);
+    }),
+    zoomOutCallback: action(() => {
+      controller.getGraph().scaleBy(0.75);
+    }),
+    fitToScreenCallback: action(() => {
+      controller.getGraph().fit(80);
+    }),
+    resetViewCallback: action(() => {
+      controller.getGraph().reset();
+    }),
+    legend: false,
+  });
 
-      controller.fromModel(model, false);
-    }
-  }, [controller, layout]);
-
+  const topologyControlBar = (
+    <TopologyControlBar controlButtons={controlButtons} />
+  );
 
   return (
-    <TopologyView
-      controlBar={
-        <TopologyControlBar
-          controlButtons={createTopologyControlButtons({
-            ...defaultControlButtonsOptions,
-            zoomInCallback: action(() => {
-              controller.getGraph().scaleBy(4 / 3);
-            }),
-            zoomOutCallback: action(() => {
-              controller.getGraph().scaleBy(0.75);
-            }),
-            fitToScreenCallback: action(() => {
-              controller.getGraph().fit(80);
-            }),
-            resetViewCallback: action(() => {
-              controller.getGraph().reset();
-              controller.getGraph().layout();
-            }),
-            legend: false
-          })}
-        />
-      }
+    <TopologyView 
+      sideBar={topologySideBar}
+      controlBar={topologyControlBar}
     >
       <VisualizationProvider controller={controller}>
-        <VisualizationSurface />
+        <VisualizationSurface state={{ selectedIds }} />
       </VisualizationProvider>
     </TopologyView>
   );
 };
-
-export default LayoutsDemo;
-
+export default TopologyCustomEdgeDemo;

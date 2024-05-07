@@ -1,0 +1,12 @@
+diff --git a/node_modules/@patternfly/patternfly/patternfly.css b/node_modules/@patternfly/patternfly/patternfly.css
+index 4046dd1..7aaa4b0 100644
+--- a/node_modules/@patternfly/patternfly/patternfly.css
++++ b/node_modules/@patternfly/patternfly/patternfly.css
+@@ -21706,7 +21706,6 @@ label.pf-v5-c-menu__item:where(:not([disabled], .pf-m-disabled, .pf-m-aria-disab
+ 
+ .pf-v5-c-page__main,
+ .pf-v5-c-page__drawer {
+-  z-index: var(--pf-v5-c-page__main--ZIndex);
+   grid-area: main;
+   overflow-x: hidden;
+   overflow-y: auto;

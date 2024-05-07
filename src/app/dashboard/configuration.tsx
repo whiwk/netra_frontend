@@ -1,209 +1,120 @@
-// import * as React from 'react';
-import React, { useState } from 'react';
-import { Table, Caption, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';//import table for input
-import { Card, CardTitle, CardBody, CardFooter, TextInput } from '@patternfly/react-core';
+import React, { useState, useRef } from 'react';
 import {
-    Dropdown,
-    DropdownItem,
-    DropdownList,
-    MenuToggle,
-    MenuToggleElement,
-    Split,
-    SplitItem,
-    ToolbarItem
-  } from '@patternfly/react-core';
+  TextInput,
+  Dropdown,
+  DropdownItem,
+  DropdownList,
+  MenuToggle,
+  MenuToggleElement
+} from '@patternfly/react-core';
+import {  Table,
+    Thead,
+    Tr,
+    Th,
+    Tbody,
+    Td,} from '@patternfly/react-table'
 
+// Define the Repository interface for table data
 interface Repository {
-    keys: string;
-    value: any; //ntar diubah ke form
-  }
-  
-type ExampleType = 'CU' | 'DU' | 'RU';
+  keys: string;
+  value: string;
+}
 
-  export const TableBasic: React.FunctionComponent = () => {
-    const modifiers = {
-        isCompact: true,
-        isFlat: true,
-        isRounded: true
-      };
+// Define the possible table keys
+type TableKey = 'CU' | 'DU' | 'RU';
 
-      const [repositories, setRepositories] = useState<Repository[]>([
-        { keys: 'cu_id', value: ''},
-        { keys: 'cell_id', value: ''},
-        { keys: 'f1_int', value: ''},
-        { keys: 'f1_cuport', value: ''},
-        { keys: 'f1_duport', value: ''},
-        { keys: 'n2_int', value: ''},
-        { keys: 'n3_int', value: ''},
-        { keys: 'mcc', value: ''},
-        { keys: 'mnc', value: ''},
-        { keys: 'tac', value: ''},
-        { keys: 'sst', value: ''},
-        { keys: 'amf_host', value: ''},
-      ]);
+// Map of data for each table type
+const tableData: Record<TableKey, Repository[]> = {
+  CU: [
+    { keys: 'cu_id', value: '' },
+    { keys: 'cell_id', value: '' },
+    { keys: 'f1_int', value: '' },
+    { keys: 'f1_cuport', value: '' }
+  ],
+  DU: [
+    { keys: 'f1_duport', value: '' },
+    { keys: 'n2_int', value: '' },
+    { keys: 'n3_int', value: '' }
+  ],
+  RU: [
+    { keys: 'mcc', value: '' },
+    { keys: 'mnc', value: '' },
+    { keys: 'tac', value: '' },
+    { keys: 'sst', value: '' },
+    { keys: 'amf_host', value: '' }
+  ]
+};
 
-      const columnNames = {
-        keys: 'Keys',
-        value: 'Value',
-      };
+const DynamicTable: React.FunctionComponent = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedTable, setSelectedTable] = useState<TableKey>('CU');
+  const [repositories, setRepositories] = useState<Repository[]>(tableData.CU);
+//   const toggleRef = useRef<MenuToggleElement>(null);
 
-      const handleValueChange = (value: string, index: number) => {
-        const updatedRepositories = [...repositories];
-        updatedRepositories[index].value = value;
-        setRepositories(updatedRepositories);
-      };
+  const onToggleClick = () => setIsOpen(!isOpen);
 
-      // const layoutDropdown = (
-      //   <Split>
-      //     <SplitItem>
-      //       <label className="pf-v5-u-display-inline-block pf-v5-u-mr-md pf-v5-u-mt-sm">Input Configuration</label>
-      //     </SplitItem>
-      //     <SplitItem>
-      //       <Dropdown
-      //         toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-      //           <MenuToggle ref={toggleRef} onClick={() => setLayoutDropdownOpen(!layoutDropdownOpen)}>
-      //             {layout}
-      //           </MenuToggle>
-      //         )}
-      //         isOpen={layoutDropdownOpen}
-      //       >
-      //         <DropdownList>
-      //           <DropdownItem key={1} onClick={() => { updateLayout('CU');}}>
-      //             CU
-      //           </DropdownItem>
-      //           <DropdownItem key={2} onClick={() => { updateLayout('DU');}}>
-      //             DU
-      //           </DropdownItem>
-      //           <DropdownItem key={3} onClick={() => { updateLayout('RU');}}>
-      //             RU
-      //           </DropdownItem>
-      //         </DropdownList>
-      //       </Dropdown>
-      //     </SplitItem>
-      //   </Split>
-      // );
+  const onSelect = (_event: React.MouseEvent<Element, MouseEvent> | undefined, value: string | number) => {
+    const tableKey = value as TableKey;
+    setIsOpen(false);
+    setSelectedTable(tableKey);
+    setRepositories(tableData[tableKey]);
+  };
 
-return (
+  const handleValueChange = (value: string, index: number) => {
+    const updatedRepositories = [...repositories];
+    updatedRepositories[index].value = value;
+    setRepositories(updatedRepositories);
+  };
+
+  return (
     <React.Fragment>
-        <Table
-        aria-label="Simple table"
+      <Dropdown
+        isOpen={isOpen}
+        onSelect={onSelect}
+        onOpenChange={setIsOpen}
+        toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+        <MenuToggle ref={toggleRef} onClick={onToggleClick} isExpanded={isOpen}>
+          Component
+        </MenuToggle>
+        )}
+        ouiaId="BasicDropdown"
+        shouldFocusToggleOnSelect
+      >
+        <DropdownList>
+          <DropdownItem value="CU" key="CU">CU</DropdownItem>
+          <DropdownItem value="DU" key="DU">DU</DropdownItem>
+          <DropdownItem value="RU" key="RU">RU</DropdownItem>
+        </DropdownList>
+      </Dropdown>
+      <Table
+        aria-label={`${selectedTable} Table`}
         variant="compact"
         borders={true}
-        >
+      >
         <Thead>
           <Tr>
-            <Th>{columnNames.keys}</Th>
-            <Th>{columnNames.value}</Th>
+            <Th>Keys</Th>
+            <Th>Value</Th>
           </Tr>
         </Thead>
         <Tbody>
-                    {repositories.map((repo, index) => (
-                      <Tr key={index}>
-                        <Td dataLabel={columnNames.keys}>{repo.keys}</Td>
-                        <Td dataLabel={columnNames.value}>
-                        <TextInput
-                          value={repo.value || ''}
-                          type="text"
-                          onChange={(_event, value) => handleValueChange(value, index)}
-                          aria-label={`text input for ${repo.keys}`}
-                        />
-                        </Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-        </Table>
+          {repositories.map((repo, index) => (
+            <Tr key={index}>
+              <Td dataLabel="Keys">{repo.keys}</Td>
+              <Td dataLabel="Value">
+                <TextInput
+                  value={repo.value || ''}
+                  type="text"
+                  onChange={(e) => handleValueChange(e.currentTarget.value, index)}
+                  aria-label={`Text input for ${repo.keys}`}
+                />
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
     </React.Fragment>
-)
-  }
+  );
+};
 
-  export default TableBasic;
-
-// import React, { useState } from 'react';
-// import { Table, Thead, Tr, Th, Tbody, Td } from '@patternfly/react-table';
-// import { Dropdown, DropdownItem, DropdownList, MenuToggle, TextInput } from '@patternfly/react-core';
-
-// export const TableBasic: React.FunctionComponent = () => {
-//   const [selectedTable, setSelectedTable] = useState('CU');
-//   const [layoutDropdownOpen, setLayoutDropdownOpen] = useState(false);
-
-//   // Data for each table. Assume each type has different data requirements
-//   const commonData = [
-//     { keys: 'mcc', value: '' },
-//     { keys: 'mnc', value: '' },
-//     { keys: 'tac', value: '' },
-//     { keys: 'net', value: '' },
-//   ];
-
-//   const cuData = [...commonData, { keys: 'ip_f1_cu', value: '' }];
-//   const duData = [...commonData, { keys: 'ip_f1_du', value: '' }];
-//   const ruData = [...commonData, { keys: 'ip_amf', value: '' }];
-
-//   const tables = {
-//     CU: cuData,
-//     DU: duData,
-//     RU: ruData,
-//   };
-
-//   const handleValueChange = (value: string, index: number) => {
-//     const updatedData = [...tables[selectedTable]];
-//     updatedData[index].value = value;
-//     tables[selectedTable] = updatedData;
-//   };
-
-//   const updateLayout = (layout: string) => {
-//     setSelectedTable(layout);
-//     setLayoutDropdownOpen(false);
-//   };
-
-//   return (
-//     <React.Fragment>
-//       <Dropdown
-//         toggle={(
-//           <MenuToggle
-//             onClick={() => setLayoutDropdownOpen(!layoutDropdownOpen)}
-//             isExpanded={layoutDropdownOpen}
-//           >
-//             {selectedTable}
-//           </MenuToggle>
-//         )}
-//         isOpen={layoutDropdownOpen}
-//       >
-//         <DropdownList>
-//           <DropdownItem key="CU" onClick={() => updateLayout('CU')}>CU</DropdownItem>
-//           <DropdownItem key="DU" onClick={() => updateLayout('DU')}>DU</DropdownItem>
-//           <DropdownItem key="RU" onClick={() => updateLayout('RU')}>RU</DropdownItem>
-//         </DropdownList>
-//       </Dropdown>
-
-//       {Object.keys(tables).map((key) => (
-//         selectedTable === key && (
-//           <Table key={key} aria-label={`${key} Table`} variant="compact" borders={true}>
-//             <Thead>
-//               <Tr>
-//                 <Th>Keys</Th>
-//                 <Th>Value</Th>
-//               </Tr>
-//             </Thead>
-//             <Tbody>
-//               {tables[key].map((item, index) => (
-//                 <Tr key={index}>
-//                   <Td>{item.keys}</Td>
-//                   <Td>
-//                     <TextInput
-//                       value={item.value}
-//                       type="text"
-//                       onChange={(_event, value) => handleValueChange(value, index)}
-//                       aria-label={`Input for ${item.keys}`}
-//                     />
-//                   </Td>
-//                 </Tr>
-//               ))}
-//             </Tbody>
-//           </Table>
-//         )
-//       ))}
-//     </React.Fragment>
-//   );
-// };
-
-// export default TableBasic;
+export default DynamicTable;

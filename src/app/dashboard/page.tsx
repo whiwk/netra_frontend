@@ -3,18 +3,22 @@ import React, { useEffect } from 'react';
 import UserLayout from '@/layouts/UserLayout';
 import useRequireAuth from '@/hooks/requireAuth';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
-import LayoutsDemo from './topology';
-import SimpleDropdown, { TableBasic } from './configuration';
+// import SimpleDropdown, { TableBasic } from './configuration';
+import TableBasic from './table';
 import ComponentCard from './component';
+import TabExample from './wireshark';
+// import ToolbarGroups from './conf';
+import TableDynamic from './configuration';
 import { Tab, ToggleGroup, ToggleGroupItem, ToggleGroupItemProps } from '@patternfly/react-core';//import table for input
 import { Grid, GridItem, PageSection } from '@patternfly/react-core'; //import layout and page section
 import { Card, CardTitle, CardBody, CardFooter } from '@patternfly/react-core'; //import card
-import TopologyCustomEdgeDemo from './topology1';
+import TopologyCustomEdgeDemo from './topology';
 
 //layout
 const WithGutters: React.FC = () => (
   <Grid hasGutter>
-    <GridItem span={12} rowSpan={3}></GridItem>
+    <GridItem span={8} rowSpan={3}></GridItem>
+    <GridItem span={4} rowSpan={3}></GridItem>
     <GridItem span={4} rowSpan={6}></GridItem>
     <GridItem span={4} rowSpan={6}></GridItem>
     <GridItem span={4} rowSpan={6}></GridItem>
@@ -46,14 +50,8 @@ const UserDashboard = () => {
       </div>
       <PageSection>
         <Grid hasGutter>
-          <GridItem span={8} rowSpan={3} style={{
-            marginTop: '-10px',
-            marginLeft: '-10px'
-          }}>
-            <Card ouiaId="BasicCard" style={{ 
-              height: '500px', 
-              borderRadius: '6px'
-            }}>
+          <GridItem span={8} rowSpan={6} style={{marginTop: '-10px', marginLeft: '-10px'}}>
+            <Card ouiaId="BasicCard" style={{height: '700px', borderRadius: '6px'}}>
               <CardTitle style={{ 
                 marginTop: '-20px', 
                 marginLeft: '-16px',
@@ -77,7 +75,7 @@ const UserDashboard = () => {
             marginRight: '-10px'
           }}>
             <Card ouiaId="BasicCard" style={{ 
-              height: '500px', 
+              height: '700px', 
               borderRadius: '6px'
               }}>
               <CardTitle style={{ 
@@ -85,46 +83,29 @@ const UserDashboard = () => {
                 marginLeft: '-16px',
                 marginRight: '-16px', 
               }}
-              >Charts</CardTitle>
+              >Configuration Panel</CardTitle>
               <CardBody style={{ 
                 marginTop: '-16px', 
                 marginLeft: '-24px',
                 marginRight: '-24px',
                 marginBottom: '-24px', 
               }}>
+               <TableDynamic />
+              </CardBody>
+            </Card>
+          </GridItem>
+
+          <GridItem span={8} rowSpan={6}>
+            <Card ouiaId="BasicCard" style={{ height: '900px' }}>
+              <CardTitle>Wireshark</CardTitle>
+              <CardBody>
+                <TabExample />
               </CardBody>
             </Card>
           </GridItem>
 
           <GridItem span={4} rowSpan={6}>
-            <Card ouiaId="BasicCard" style={{ height: '700px' }}>
-              <CardTitle>Components Management Panel</CardTitle>
-              <CardBody>
-                <ComponentCard />
-              </CardBody>
-            </Card>
-          </GridItem>
-
-          <GridItem span={4} rowSpan={6}>
-            <Card ouiaId="BasicCard"  style={{ height: '700px' }}>
-              <CardTitle>Configuration Panel</CardTitle>
-              <CardBody>
-                <TableBasic />
-              </CardBody>
-            </Card>
-          </GridItem>
-
-          <GridItem span={4} rowSpan={6}>
-            <Card ouiaId="BasicCard" style={{ height: '700px' }}>
-              <CardTitle>Output</CardTitle>
-              <CardBody>
-                
-              </CardBody>
-            </Card>
-          </GridItem>
-
-          <GridItem span={12} rowSpan={3}>
-            <Card ouiaId="BasicCard">
+            <Card ouiaId="BasicCard"  style={{ height: '900px' }}>
               <CardTitle>Wireshark</CardTitle>
               <CardBody>
                 

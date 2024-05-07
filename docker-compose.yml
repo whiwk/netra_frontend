@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  backend:
+    image: quay.tiplab.local/openetra/fe:dev
+    ports:
+      - 3002:3000
+    networks:
+      - netra
+
+networks:
+  netra:
+    driver: bridge

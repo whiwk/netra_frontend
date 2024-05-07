@@ -1,13 +1,13 @@
-FROM quay.tiplab.local/openetra/node:latest
+FROM quay.tiplab.local/openetra/node:18.17.0-alpine
 
 WORKDIR /app
 
 COPY package.json ./
 
-RUN yarn
+RUN npm install
 
 COPY . .
 
-#RUN yarn build
+EXPOSE 3000
 
-CMD ["yarn", "dev"]
+CMD ["npm", "run", "dev"]

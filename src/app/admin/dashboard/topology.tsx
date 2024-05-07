@@ -342,11 +342,6 @@ export const TopologyCustomEdgeDemo: React.FC = () => {
       controller.getGraph().reset();
     }),
     legend: false,
-    // Set text properties to undefined or empty strings to remove labels
-    zoomInIconOnly: true,
-    zoomOutIconOnly: true,
-    fitToScreenIconOnly: true,
-    resetViewIconOnly: true
   });
 
   const topologyControlBar = (

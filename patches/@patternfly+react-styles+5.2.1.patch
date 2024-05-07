@@ -10,3 +10,15 @@ index 64059e0..b4721b1 100644
  }
  .pf-v5-c-login__main > :first-child:not(.pf-v5-c-login__main-header) {
    padding-block-start: var(--pf-v5-c-login__main-header--PaddingTop);
+diff --git a/node_modules/@patternfly/react-styles/css/components/Page/page.css b/node_modules/@patternfly/react-styles/css/components/Page/page.css
+index 445043d..4c6af26 100644
+--- a/node_modules/@patternfly/react-styles/css/components/Page/page.css
++++ b/node_modules/@patternfly/react-styles/css/components/Page/page.css
+@@ -689,7 +689,6 @@
+ 
+ .pf-v5-c-page__main,
+ .pf-v5-c-page__drawer {
+-  z-index: var(--pf-v5-c-page__main--ZIndex);
+   grid-area: main;
+   overflow-x: hidden;
+   overflow-y: auto;
